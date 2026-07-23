@@ -1,34 +1,31 @@
 // zona de codigo principal
+import ClienteModelo from "./Cliente_modelo.js";
+import Api_modelo from "./Api_modelo.js";
 
-function hacer_bucle(){
-    for(let i = 0; i<10000; i++){
-        console.log(i);
+const boton_registrar = document.getElementById("boton_registrar");
+const mensaje = document.getElementById("mensaje");
+const api = new Api_modelo();
+
+boton_registrar.addEventListener("click", () => {
+    const nombre = document.getElementById("nombre").value;
+    const apellido = document.getElementById("apellido").value;
+    const rol = document.getElementById("rol").value;
+
+    const cliente = new ClienteModelo(nombre,apellido,rol);
+
+    if (cliente.validar_nombre()){
+
+        const registrado = api.guardar_cliente("cliente", cliente);
+
+        if (registrado){
+            api.guardar_cliente("cliente", cliente);
+            api.imprimir_cliente();
+            mensaje.textContent = "Nuevo cliente registrado";
+        }else{
+            mensaje.textContent = "El cliente ya existe";
+        }    
+    }else{
+        mensaje.textContent = "Nombre invalido: debe tener mas de 3 caracteres";
     }
-}    
 
-async function hacer_saludo(){
-    const info = await hacer_bucle();
-    console.log("hola mundo...");
-}
-
-const info_cliente = {
-    "nombre": "nelson",
-    "apellido": "rincon",
-    "rol": "vendedor"
-}
-
-const boton_enviar = document.getElementById("boton_registrar");
-console.log(boton_enviar);
-
-boton_enviar.addEventListener("click", ()=>{
-    const info_storage = localStorage.getItem("cliente")
-    console.log(info_storage)
-
-    localStorage.setItem("info_cliente" , JSON.stringify(info_cliente));
-    localStorage.setItem("info_token" , JSON.stringify([]));
-    localStorage.setItem("info_api" , JSON.stringify([]));
-    localStorage.setItem("info_producto" , JSON.stringify([]));
-
-    hacer_saludo();
-
-});
+})
